@@ -122,7 +122,7 @@ confs = {
         },
         "preprocessing": {
             "grayscale": False,
-            "resize_max": 1024,
+            "resize_max": 720,
         },
     },
     # Global descriptors
@@ -144,7 +144,7 @@ confs = {
     "eigenplaces": {
         "output": "global-feats-eigenplaces",
         "model": {"name": "eigenplaces"},
-        "preprocessing": {"resize_max": 1024},
+        "preprocessing": {"resize_max": 720},
     },
 }
 
@@ -305,6 +305,39 @@ def main(
 
     logger.info("Finished exporting features.")
     return feature_path
+
+
+@torch.no_grad()
+def main_nonpersistence(
+    conf: Dict,
+    model,
+    image_dir: Path,
+    image_list: Optional[Union[Path, List[str]]] = None,
+) -> Path:
+    dataset = ImageDataset(image_dir, conf["preprocessing"], image_list)
+    
+    import os
+    loader = torch.utils.data.DataLoader(
+        dataset, num_workers=os.cpu_count(), shuffle=False, pin_memory=True
+    )
+    
+    result = {}
+    for idx, data in enumerate(loader):
+        name = dataset.names[idx]
+        pred = model({"image": data["image"].to('cpu', non_blocking=True)})
+        pred = {k: v[0].cpu().numpy() for k, v in pred.items()}
+
+        pred["image_size"] = original_size = data["original_size"][0].numpy()
+        if "global_descriptor" in pred:
+            pred["global_descriptor"] = torch.from_numpy(np.stack([pred['global_descriptor']], 0)).to(torch.float32)
+        if "keypoints" in pred:
+            size = np.array(data["image"].shape[-2:][::-1])
+            scales = (original_size / size).astype(np.float32)
+            pred["keypoints"] = (pred["keypoints"] + 0.5) * scales[None] - 0.5
+            if "scales" in pred:
+                pred["scales"] *= scales.mean()
+        result[name] = pred
+    return result
 
 
 if __name__ == "__main__":

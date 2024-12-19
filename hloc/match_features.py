@@ -139,6 +139,31 @@ class FeaturePairsDataset(torch.utils.data.Dataset):
         return len(self.pairs)
 
 
+class FeaturePairsDatasetNonpersistence(torch.utils.data.Dataset):
+    def __init__(self, pairs, features_q, features_r):
+        self.pairs = pairs
+        self.features_q = features_q
+        self.features_r = features_r
+
+    def __getitem__(self, idx):
+        name0, name1 = self.pairs[idx]
+        data = {}
+        grp = self.features_q[name0]
+        for k, v in grp.items():
+            data[k + "0"] = torch.from_numpy(v)
+        # some matchers might expect an image but only use its size
+        data["image0"] = torch.empty((1,) + tuple(grp["image_size"])[::-1])
+        with h5py.File(self.features_r, "r") as fd:
+            grp = fd[name1]
+            for k, v in grp.items():
+                data[k + "1"] = torch.from_numpy(v.__array__()).to(torch.float32)
+            data["image1"] = torch.empty((1,) + tuple(grp["image_size"])[::-1])
+        return data
+
+    def __len__(self):
+        return len(self.pairs)
+
+
 def writer_fn(inp, match_path):
     pair, pred = inp
     with h5py.File(str(match_path), "a", libver="latest") as fd:
@@ -253,6 +278,34 @@ def match_from_paths(
         writer_queue.put((pair, pred))
     writer_queue.join()
     logger.info("Finished exporting matches.")
+
+
+@torch.no_grad()
+def match_from_paths_nonpersistence(
+    conf: Dict,
+    pairs: list[tuple[str]],
+    feature_path_q: Path,
+    feature_path_ref: Path,
+) -> Path:
+    device = 'cpu'
+    Model = dynamic_load(matchers, conf["model"]["name"])
+    model = Model(conf["model"]).eval().to(device)
+
+    dataset = FeaturePairsDatasetNonpersistence(pairs, feature_path_q, feature_path_ref)
+    import os
+    loader = torch.utils.data.DataLoader(
+        dataset, num_workers=os.cpu_count(), batch_size=1, shuffle=False, pin_memory=True
+    )
+
+    results = {}
+    for idx, data in enumerate(loader):
+        data = {
+            k: v if k.startswith("image") else v.to(device, non_blocking=True)
+            for k, v in data.items()
+        }
+        pred = model(data)
+        results[pairs[idx]] = pred
+    return results
 
 
 if __name__ == "__main__":
