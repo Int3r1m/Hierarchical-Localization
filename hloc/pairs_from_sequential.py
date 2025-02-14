@@ -16,16 +16,23 @@ def fibonacci_sequence(n):
     return sequence[i]
 
 def main(path: Path, output, overlap):
-    file_name_list = [f.name for f in path.iterdir() if f.is_file()]
+    file_name_list = sorted(
+        [f.name for f in path.iterdir() if f.is_file()],
+        key=lambda name: int(name.split('_')[-1].split('.')[0])
+    )
+    print(file_name_list)
     pairs = []
     for i in range(len(file_name_list)):
         img_name1 = file_name_list[i]
         for j in range(overlap):
-            tmp = fibonacci_sequence(j + 1)
-            img_name2_fibonacci = file_name_list[(i + tmp) % len(file_name_list)]
+            img_name2_fibonacci = file_name_list[(i + j + 1) % len(file_name_list)]
             pair_fibonacci = (img_name1, img_name2_fibonacci)
             pairs.append(pair_fibonacci)
     with open(output, "w") as f:
-        for pair in pairs:
-            f.write(" ".join([pair[0], pair[1]]) + "\n")
+            f.write("\n".join(" ".join([i, j]) for i, j in pairs))
     return pairs
+
+if __name__ == "__main__":
+    path = Path("/home/dawa/桌面/1F/images/2")
+    output = Path("/home/dawa/桌面/1F/pairs_2.txt")
+    main(path, output, 8)

@@ -56,7 +56,7 @@ confs = {
     "loftr_superpoint": {
         "output": "matches-loftr_aachen",
         "model": {"name": "loftr", "weights": "outdoor"},
-        "preprocessing": {"grayscale": True, "resize_max": 1024, "dfactor": 8},
+        "preprocessing": {"grayscale": True, "resize_max": 1440, "dfactor": 8},
         "max_error": 4,  # max error for assigned keypoints (in px)
         "cell_size": 4,  # size of quantization patch (max 1 kp/patch)
     },
@@ -242,7 +242,7 @@ def match_dense(
 
     dataset = ImagePairDataset(image_dir, conf["preprocessing"], pairs)
     loader = torch.utils.data.DataLoader(
-        dataset, num_workers=16, batch_size=1, shuffle=False
+        dataset, num_workers=12, batch_size=1, shuffle=False
     )
 
     logger.info("Performing dense matching...")

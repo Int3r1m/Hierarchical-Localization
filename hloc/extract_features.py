@@ -35,7 +35,7 @@ confs = {
         },
         "preprocessing": {
             "grayscale": True,
-            "resize_max": 1024,
+            "resize_max": 2880,
         },
     },
     # Resize images to 1600px even if they are originally smaller.
@@ -49,7 +49,7 @@ confs = {
         },
         "preprocessing": {
             "grayscale": True,
-            "resize_max": 1600,
+            "resize_max": 2880,
             "resize_force": True,
         },
     },
@@ -122,7 +122,7 @@ confs = {
         },
         "preprocessing": {
             "grayscale": False,
-            "resize_max": 720,
+            "resize_max": 2880,
         },
     },
     # Global descriptors
@@ -134,7 +134,7 @@ confs = {
     "netvlad": {
         "output": "global-feats-netvlad",
         "model": {"name": "netvlad"},
-        "preprocessing": {"resize_max": 1024},
+        "preprocessing": {"resize_max": 2880},
     },
     "openibl": {
         "output": "global-feats-openibl",
@@ -144,7 +144,7 @@ confs = {
     "eigenplaces": {
         "output": "global-feats-eigenplaces",
         "model": {"name": "eigenplaces"},
-        "preprocessing": {"resize_max": 720},
+        "preprocessing": {"resize_max": 2880},
     },
 }
 

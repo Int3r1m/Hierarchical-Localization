@@ -6,7 +6,7 @@ from ..utils.base_model import BaseModel
 class ALIKED(BaseModel):
     default_conf = {
         "model_name": "aliked-n16",
-        "max_num_keypoints": -1,
+        "max_num_keypoints": 8192,
         "detection_threshold": 0.2,
         "nms_radius": 2,
     }

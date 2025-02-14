@@ -3,6 +3,7 @@ from hloc import (
     match_features,
     pairs_from_retrieval,
     triangulation,
+    match_dense
 )
 from pathlib import Path
 
@@ -10,9 +11,10 @@ from pathlib import Path
 def main():
     retriangulation_path = Path(args.retriangulation_path)
 
-    retrieval_config = extract_features.confs["eigenplaces"]
+    retrieval_config = extract_features.confs["netvlad"]
     feat_config = extract_features.confs["aliked-n16"]
     match_config = match_features.confs["aliked+lightglue"]
+    # dense_matcher_conf = match_dense.confs["loftr_superpoint"]
 
     pairs = retriangulation_path / "pairs_retriangulation.txt"
     global_feats = retriangulation_path / "global_feats_retriangulation.h5"
@@ -36,6 +38,9 @@ def main():
         match_config, pairs, "local_feats_retriangulation", retriangulation_path
     )
 
+    # feats_path, match_retriangulation = match_dense.main(
+    #     dense_matcher_conf, pairs, imgs_path, retriangulation_path, max_kps=4096
+    # )
     triangulation.main(
         retriangulation_path, refer_cam_pose, imgs_path, pairs, feats_path, match_retriangulation
     )
@@ -43,7 +48,7 @@ def main():
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--retriangulation_path', type=str, default='/media/dawa/HIKSEMIHIKSEMIMDC1/test/datasets/10F/retriangulation2',
+    parser.add_argument('--retriangulation_path', type=str, default='/home/dawa/桌面/1F/models/retriangulation',
                         help='Output path.')
     args = parser.parse_args()
     main()

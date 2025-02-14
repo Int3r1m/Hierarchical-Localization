@@ -104,13 +104,13 @@ if __name__ == '__main__':
     parser.add_argument('--threads', type=int, default=1,
                         help='Threads of the service running.')
     '''-----References Parameters-----'''
-    parser.add_argument('--refer_imgs_path', type=str, default='./areas/10F/images',
+    parser.add_argument('--refer_imgs_path', type=str, default='/home/dawa/桌面/3F/models/retriangulation/clip_imgs',
                         help='Reference images path.')
-    parser.add_argument('--refer_global_feats_path', type=str, default='./areas/10F/features/global_feats_retriangulation.h5',
+    parser.add_argument('--refer_global_feats_path', type=str, default='/home/dawa/桌面/3F/models/retriangulation/global_feats_retriangulation.h5',
                         help='Reference global features path.')
-    parser.add_argument('--refer_local_feats_path', type=str, default='./areas/10F/features/local_feats_retriangulation.h5',
+    parser.add_argument('--refer_local_feats_path', type=str, default='/home/dawa/桌面/3F/models/retriangulation/local_feats_retriangulation.h5',
                         help='Reference local features path.')
-    parser.add_argument('--refer_reconstruction_path', type=str, default='./areas/10F/sparse_model',
+    parser.add_argument('--refer_reconstruction_path', type=str, default='/home/dawa/桌面/3F/models/retriangulation',
                         help='Reference reconstruction path.')
     '''------------------------------'''
     args = parser.parse_args()
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     from hloc import extractors, extract_features, match_features
     from hloc.utils.base_model import dynamic_load
     from hloc.localize_sfm import QueryLocalizer, pose_from_cluster_nonpersistence, do_covisibility_clustering
-    global_feats_config = extract_features.confs["eigenplaces"]
+    global_feats_config = extract_features.confs["netvlad"]
     local_feats_config = extract_features.confs["aliked-n16"]
     match_config = match_features.confs["aliked+lightglue"]
 
