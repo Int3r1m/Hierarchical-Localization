@@ -92,7 +92,7 @@ confs = {
         "model": {"name": "dog"},
         "preprocessing": {
             "grayscale": True,
-            "resize_max": 1600,
+            "resize_max": 720,
         },
     },
     "sosnet": {
@@ -107,11 +107,11 @@ confs = {
         "output": "feats-disk",
         "model": {
             "name": "disk",
-            "max_keypoints": 5000,
+            "max_keypoints": 2048,
         },
         "preprocessing": {
             "grayscale": False,
-            "resize_max": 1600,
+            "resize_max": 720,
         },
     },
     "aliked-n16": {

@@ -48,7 +48,7 @@ def main():
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--retriangulation_path', type=str, default='/home/dawa/桌面/1F/models/retriangulation',
+    parser.add_argument('--retriangulation_path', type=str, default='/media/dawa/Datasets/HuzhouHoTCM/Outpatients/SfM/4F/Models/Retriangulation',
                         help='Output path.')
     args = parser.parse_args()
     main()

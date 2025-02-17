@@ -47,7 +47,7 @@ def visual_localization():
         local_feats_config, model_l, query_imgs_path, [query_img_name])
     
     pairs = pair_from_global_descs(
-        query_global_feats[query_img_name]["global_descriptor"], refer_global_descs, [query_img_name], refer_img_names, k=7)
+        query_global_feats[query_img_name]["global_descriptor"], refer_global_descs, [query_img_name], refer_img_names, k=13)
     
     matches = match_features.match_from_paths_nonpersistence(
         match_config, pairs, query_local_feats, args.refer_local_feats_path)
@@ -55,6 +55,7 @@ def visual_localization():
     options = pycolmap.ImageReaderOptions()
     options.camera_model = "PINHOLE"
     camera = pycolmap.infer_camera_from_image(query_img_path, options)
+    camera.focal_length = 360
 
     config = {
         "estimation": {"ransac": {"max_error": 9}},
@@ -104,13 +105,13 @@ if __name__ == '__main__':
     parser.add_argument('--threads', type=int, default=1,
                         help='Threads of the service running.')
     '''-----References Parameters-----'''
-    parser.add_argument('--refer_imgs_path', type=str, default='/home/dawa/桌面/3F/models/retriangulation/clip_imgs',
+    parser.add_argument('--refer_imgs_path', type=str, default='/media/dawa/Datasets/HuzhouHoTCM/Outpatients/SfM/1F/Models/Retriangulation/clip_imgs',
                         help='Reference images path.')
-    parser.add_argument('--refer_global_feats_path', type=str, default='/home/dawa/桌面/3F/models/retriangulation/global_feats_retriangulation.h5',
+    parser.add_argument('--refer_global_feats_path', type=str, default='/media/dawa/Datasets/HuzhouHoTCM/Outpatients/SfM/1F/Models/Retriangulation/global_feats_retriangulation.h5',
                         help='Reference global features path.')
-    parser.add_argument('--refer_local_feats_path', type=str, default='/home/dawa/桌面/3F/models/retriangulation/local_feats_retriangulation.h5',
+    parser.add_argument('--refer_local_feats_path', type=str, default='/media/dawa/Datasets/HuzhouHoTCM/Outpatients/SfM/1F/Models/Retriangulation/local_feats_retriangulation.h5',
                         help='Reference local features path.')
-    parser.add_argument('--refer_reconstruction_path', type=str, default='/home/dawa/桌面/3F/models/retriangulation',
+    parser.add_argument('--refer_reconstruction_path', type=str, default='/media/dawa/Datasets/HuzhouHoTCM/Outpatients/SfM/1F/Models/Retriangulation/txt',
                         help='Reference reconstruction path.')
     '''------------------------------'''
     args = parser.parse_args()
