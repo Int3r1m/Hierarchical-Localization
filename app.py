@@ -55,7 +55,6 @@ def visual_localization():
     options = pycolmap.ImageReaderOptions()
     options.camera_model = "PINHOLE"
     camera = pycolmap.infer_camera_from_image(query_img_path, options)
-    camera.focal_length = 360
 
     config = {
         "estimation": {"ransac": {"max_error": 9}},

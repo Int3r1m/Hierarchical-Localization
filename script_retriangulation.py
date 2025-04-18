@@ -14,13 +14,12 @@ def main():
     retrieval_config = extract_features.confs["netvlad"]
     feat_config = extract_features.confs["aliked-n16"]
     match_config = match_features.confs["aliked+lightglue"]
-    # dense_matcher_conf = match_dense.confs["loftr_superpoint"]
 
-    pairs = retriangulation_path / "pairs_retriangulation.txt"
-    global_feats = retriangulation_path / "global_feats_retriangulation.h5"
-    local_feats = retriangulation_path / "local_feats_retriangulation.h5"
-    imgs_path = retriangulation_path / 'clip_imgs'
-    refer_cam_pose = retriangulation_path / "clip_sparse"
+    pairs = retriangulation_path / "pairs.txt"
+    global_feats = retriangulation_path / "global_feats.h5"
+    local_feats = retriangulation_path / "local_feats.h5"
+    imgs_path = retriangulation_path / ".." / "images"
+    refer_cam_pose = retriangulation_path / ".." / "sparse"
 
     img_list = [img_path.relative_to(imgs_path).as_posix() for img_path in (imgs_path).iterdir()]
 
@@ -35,7 +34,7 @@ def main():
     )
 
     match_retriangulation = match_features.main(
-        match_config, pairs, "local_feats_retriangulation", retriangulation_path
+        match_config, pairs, "local_feats", retriangulation_path
     )
 
     # feats_path, match_retriangulation = match_dense.main(
@@ -48,7 +47,7 @@ def main():
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--retriangulation_path', type=str, default='/media/dawa/Datasets/HuzhouHoTCM/Outpatients/SfM/4F/Models/Retriangulation',
+    parser.add_argument('--retriangulation_path', type=str, default='/media/dawa/HIKSEMIHIKSEMIMDC1/canteen/SfM/pinhole',
                         help='Output path.')
     args = parser.parse_args()
     main()
